@@ -1,0 +1,19 @@
+.body-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.body-container h1 {
+    font-weight: bold;
+    color: white;
+}
+
+.body-wrapper {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

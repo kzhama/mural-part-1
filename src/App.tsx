@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { FC } from "react";
+import { Divider } from "antd";
+import Header from "./components/Header";
+import Body from "./components/Body";
+import { useWallet } from "./hooks/useWallet";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import "./styles/App.css";
+
+const App: FC = () => {
+	const { currentAccountAddress } = useWallet();
+	return (
+		<div className="App">
+			<Header />
+			<Divider />
+			{!!currentAccountAddress && <Body />}
+		</div>
+	);
+};
 
 export default App;

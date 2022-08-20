@@ -1,0 +1,11 @@
+.table-container {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.table-container h2{
+    color: white;
+}

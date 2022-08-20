@@ -1,0 +1,15 @@
+.header-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: white;
+  }
+  
+  #balance-text {
+    font-weight: bold;
+  }
+
+  #accountAddress-text {
+    font-family: monospace;
+  }

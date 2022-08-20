@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.ant-divider.ant-divider-horizontal{
+   border-top: 1px solid grey;
+}
+
+input {
+  border-radius: 20px !important;
+  color: white !important;
+  background-color: #292a2b !important;
+  border-color: #1890ff !important;
+  font-family: monospace !important;
+}
