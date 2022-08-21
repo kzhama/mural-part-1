@@ -11,6 +11,8 @@ const Body: FC = () => {
 	const [amountInEth, setAmountInEth] = useState("");
 	const { sendEth, isLoading, txHashes } = useWallet();
 
+	const sendButtonIsDisabled = ethAddress.length !== 42 || !amountInEth;
+
 	return (
 		<div className="body-container">
 			<div className="body-wrapper">
@@ -19,7 +21,7 @@ const Body: FC = () => {
 				<br />
 				<Input onChange={(e) => setAmountInEth(e.target.value)} value={amountInEth} placeholder="Amount in ETH" disabled={isLoading} />
 				<br />
-				<Button type="primary" shape="round" onClick={() => sendEth(ethAddress, amountInEth)} loading={isLoading}>
+				<Button type="primary" shape="round" onClick={() => sendEth(ethAddress, amountInEth)} loading={isLoading} disabled={sendButtonIsDisabled}>
 					<SendOutlined />
 				</Button>
 				<br />

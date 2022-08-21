@@ -78,6 +78,7 @@ export const useWallet = () => {
 	const sendEth = async (ethAddress: string, amountInEth: string) => {
 		try {
 			setIsLoading(true);
+
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const signer = provider.getSigner();
 			const txResponse = await signer.sendTransaction({
@@ -87,6 +88,8 @@ export const useWallet = () => {
 
 			message.success("Tx signed successfully! Click tx hash to view progress on Etherscan", 8);
 
+			// This txs should be in some kind of global state manager like Redux, or React useReducer hook.
+			// But for this example, its just an overkill.
 			const { hash } = txResponse;
 			setTxHashes((prevState) => {
 				return [
@@ -98,10 +101,12 @@ export const useWallet = () => {
 					...prevState,
 				];
 			});
+
 			setIsLoading(false);
 		} catch (err) {
 			setIsLoading(false);
 			console.error(err);
+			if (err instanceof Error) message.error(err.message, 8);
 		}
 	};
 
