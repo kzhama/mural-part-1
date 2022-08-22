@@ -95,8 +95,8 @@ export const useWallet = () => {
 				return [
 					{
 						key: hash,
-						hash: hash,
-						link: `https://rinkeby.etherscan.io/tx/${hash}`,
+						txHash: hash,
+						linkToEtherscan: `https://rinkeby.etherscan.io/tx/${hash}`,
 					},
 					...prevState,
 				];

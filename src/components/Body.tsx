@@ -1,31 +1,19 @@
-import { useState, FC } from "react";
-import { Button, Input } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { FC } from "react";
 import { useWallet } from "../hooks/useWallet";
 import TransactionsTable from "./TransactionsTable";
+import SendCard from "./SendCard";
 
 import "../styles/Body.css";
 
 const Body: FC = () => {
-	const [ethAddress, setEthAddress] = useState("");
-	const [amountInEth, setAmountInEth] = useState("");
 	const { sendEth, isLoading, txHashes } = useWallet();
-
-	const sendButtonIsDisabled = ethAddress.length !== 42 || !amountInEth;
 
 	return (
 		<div className="body-container">
 			<div className="body-wrapper">
-				<h1>Send ETH</h1>
-				<Input onChange={(e) => setEthAddress(e.target.value)} value={ethAddress} placeholder="Recipient Address" disabled={isLoading} />
+				<SendCard sendEth={sendEth} isWalletLoading={isLoading} />
 				<br />
-				<Input onChange={(e) => setAmountInEth(e.target.value)} value={amountInEth} placeholder="Amount in ETH" disabled={isLoading} />
-				<br />
-				<Button type="primary" shape="round" onClick={() => sendEth(ethAddress, amountInEth)} loading={isLoading} disabled={sendButtonIsDisabled}>
-					<SendOutlined />
-				</Button>
-				<br />
-				<TransactionsTable txHashes={txHashes} />
+				{!!txHashes.length && <TransactionsTable txHashes={txHashes} />}
 			</div>
 		</div>
 	);

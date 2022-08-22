@@ -4,8 +4,8 @@ import "../styles/TransactionsTable.css";
 
 export interface TxType {
 	key: string;
-	hash: string;
-	link: string;
+	txHash: string;
+	linkToEtherscan: string;
 }
 
 interface TransactionsTableProps {
@@ -13,15 +13,13 @@ interface TransactionsTableProps {
 }
 
 const TransactionsTable: FC<TransactionsTableProps> = ({ txHashes }) => {
-	if (!txHashes.length) return null;
-
 	return (
 		<div className="table-container">
 			<h2>Transactions List</h2>
-			{txHashes.map(({ hash, link, key }) => {
+			{txHashes.map(({ txHash, linkToEtherscan, key }) => {
 				return (
-					<a key={key} href={link} target="_blank" rel="noopener noreferrer">
-						{hash}
+					<a key={key} href={linkToEtherscan} target="_blank" rel="noopener noreferrer">
+						{txHash}
 					</a>
 				);
 			})}
