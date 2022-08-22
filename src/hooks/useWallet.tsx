@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { TxType } from "../components/TransactionsTable";
 import { message } from "antd";
+import TxHashesContext from "../context/TxHashesProvider";
 
 export const useWallet = () => {
 	const [currentAccountAddress, setCurrentAccountAddress] = useState("");
 	const [balanceInEthers, setBalanceInEthers] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [txHashes, setTxHashes] = useState<TxType[]>([]);
+
+	const { setTxHashes } = useContext(TxHashesContext);
 
 	const resetStates = () => {
 		setBalanceInEthers("");
@@ -136,6 +137,5 @@ export const useWallet = () => {
 		balanceInEthers,
 		isLoading,
 		sendEth,
-		txHashes,
 	};
 };

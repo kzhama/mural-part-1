@@ -1,12 +1,14 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { useWallet } from "../hooks/useWallet";
+import TxHashesContext from "../context/TxHashesProvider";
 import TransactionsTable from "./TransactionsTable";
 import SendCard from "./SendCard";
 
 import "../styles/Body.css";
 
 const Body: FC = () => {
-	const { sendEth, isLoading, txHashes } = useWallet();
+	const { sendEth, isLoading } = useWallet();
+	const { txHashes } = useContext(TxHashesContext);
 
 	return (
 		<div className="body-container">
