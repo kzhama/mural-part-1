@@ -2,9 +2,9 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Clone the project
+### Clone the project
 
-In the project directory, you can run:
+`https://github.com/kzhama/mural-part-1.git`
 
 ### Install all dependencies
 
