@@ -16,6 +16,7 @@ export const useWallet = () => {
 	};
 
 	const checkIfWalletIsConnected = useCallback(async () => {
+		setIsLoading(true);
 		try {
 			const { ethereum } = window;
 
@@ -34,12 +35,14 @@ export const useWallet = () => {
 			}
 		} catch (err) {
 			resetStates();
-			setIsLoading(false);
 			console.error(err);
+		} finally {
+			setIsLoading(false);
 		}
 	}, []);
 
 	const connectWallet = async () => {
+		setIsLoading(true);
 		try {
 			const { ethereum } = window;
 
@@ -48,17 +51,15 @@ export const useWallet = () => {
 				return;
 			}
 
-			setIsLoading(true);
-
 			const accounts = await ethereum.request({
 				method: "eth_requestAccounts",
 			});
 
 			setCurrentAccountAddress(accounts[0]);
-			setIsLoading(false);
 		} catch (err) {
-			setIsLoading(false);
 			console.error(err);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
