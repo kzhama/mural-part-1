@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { TxHashesProvider } from "./context/TxHashesProvider";
+import { ContextProvider } from "./context/ContextProvider";
 import App from "./App";
 
 import "./styles/index.css";
@@ -9,8 +9,8 @@ import "antd/dist/antd.min.css";
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
 	<React.StrictMode>
-		<TxHashesProvider>
+		<ContextProvider>
 			<App />
-		</TxHashesProvider>
+		</ContextProvider>
 	</React.StrictMode>
 );

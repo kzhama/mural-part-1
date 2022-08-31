@@ -2,15 +2,21 @@ import { FC } from "react";
 import { Button, Space } from "antd";
 import CountUp from "react-countup";
 import { useWallet } from "../hooks/useWallet";
+import { useCustomContext } from "../hooks/useCustomContext";
 
 import ethLogo from "../assets/eth-diamond-rainbow.png";
 
 import "../styles/Header.css";
 
 const Header: FC = () => {
-	const { connectWallet, currentAccountAddress, balanceInEthers, isLoading } = useWallet();
+	const { connectWallet, isLoading } = useWallet({ withEffects: true });
+	const {
+		state: { currentAccountAddress, balanceInEthers },
+	} = useCustomContext();
 
-	const hiddenCurrentAccountAddress = `${currentAccountAddress.substring(0, 4)}...${currentAccountAddress.substring(38)}`;
+	const hiddenCurrentAccountAddress = `${currentAccountAddress.substring(0, 4)}...${currentAccountAddress.substring(
+		38
+	)}`;
 
 	return (
 		<div className="header-container">
@@ -26,7 +32,14 @@ const Header: FC = () => {
 				</>
 			) : (
 				<>
-					<Button type="primary" shape="round" size="large" onClick={connectWallet} disabled={!!currentAccountAddress} loading={isLoading}>
+					<Button
+						type="primary"
+						shape="round"
+						size="large"
+						onClick={connectWallet}
+						disabled={!!currentAccountAddress}
+						loading={isLoading}
+					>
 						Connect Wallet
 					</Button>
 				</>

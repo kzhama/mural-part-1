@@ -1,18 +1,21 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { message } from "antd";
-import TxHashesContext from "../context/TxHashesProvider";
+import { useCustomContext } from "./useCustomContext";
+import { SET_BALANCE_IN_ETHERS, SET_CURRENT_ACCOUNT_ADDRESS, SET_TX_HASHES } from "../context/ContextProvider";
 
-export const useWallet = () => {
-	const [currentAccountAddress, setCurrentAccountAddress] = useState("");
-	const [balanceInEthers, setBalanceInEthers] = useState("");
+interface UseWalletProps {
+	withEffects?: boolean;
+}
+
+export const useWallet = ({ withEffects }: UseWalletProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 
-	const { setTxHashes } = useContext(TxHashesContext);
+	const { state, dispatch } = useCustomContext();
 
 	const resetStates = () => {
-		setBalanceInEthers("");
-		setCurrentAccountAddress("");
+		dispatch({ type: SET_BALANCE_IN_ETHERS, payload: "" });
+		dispatch({ type: SET_CURRENT_ACCOUNT_ADDRESS, payload: "" });
 	};
 
 	const checkIfWalletIsConnected = useCallback(async () => {
@@ -29,7 +32,7 @@ export const useWallet = () => {
 
 			if (accounts.length !== 0) {
 				const account = accounts[0];
-				setCurrentAccountAddress(account);
+				dispatch({ type: SET_CURRENT_ACCOUNT_ADDRESS, payload: account });
 			} else {
 				resetStates();
 			}
@@ -39,7 +42,7 @@ export const useWallet = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, []);
+	}, [dispatch, resetStates]);
 
 	const connectWallet = async () => {
 		setIsLoading(true);
@@ -55,7 +58,7 @@ export const useWallet = () => {
 				method: "eth_requestAccounts",
 			});
 
-			setCurrentAccountAddress(accounts[0]);
+			dispatch({ type: SET_CURRENT_ACCOUNT_ADDRESS, payload: accounts[0] });
 		} catch (err) {
 			console.error(err);
 		} finally {
@@ -64,23 +67,22 @@ export const useWallet = () => {
 	};
 
 	const getBalanceInEthers = useCallback(async () => {
+		setIsLoading(true);
 		try {
-			setIsLoading(true);
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			const balanceResponse = await provider.getBalance(currentAccountAddress);
+			const balanceResponse = await provider.getBalance(state.currentAccountAddress);
 			const balanceFormattedToEthers = ethers.utils.formatEther(balanceResponse);
-			setBalanceInEthers(balanceFormattedToEthers);
-			setIsLoading(false);
+			dispatch({ type: SET_BALANCE_IN_ETHERS, payload: balanceFormattedToEthers });
 		} catch (err) {
-			setIsLoading(false);
 			console.error(err);
+		} finally {
+			setIsLoading(false);
 		}
-	}, [currentAccountAddress]);
+	}, [state.currentAccountAddress, dispatch, withEffects]);
 
 	const sendEth = async (ethAddress: string, amountInEth: string) => {
+		setIsLoading(true);
 		try {
-			setIsLoading(true);
-
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
 			const signer = provider.getSigner();
 			const txResponse = await signer.sendTransaction({
@@ -90,34 +92,30 @@ export const useWallet = () => {
 
 			message.success("Tx signed successfully! Click tx hash to view progress on Etherscan", 8);
 
-			// This txs should be in some kind of global state manager like Redux, or React useReducer hook.
-			// But for this example, its just an overkill.
 			const { hash } = txResponse;
-			setTxHashes((prevState) => {
-				return [
-					{
-						key: hash,
-						txHash: hash,
-						linkToEtherscan: `https://rinkeby.etherscan.io/tx/${hash}`,
-					},
-					...prevState,
-				];
+			dispatch({
+				type: SET_TX_HASHES,
+				payload: {
+					key: hash,
+					txHash: hash,
+					linkToEtherscan: `https://rinkeby.etherscan.io/tx/${hash}`,
+				},
 			});
-
-			setIsLoading(false);
 		} catch (err) {
-			setIsLoading(false);
 			console.error(err);
 			if (err instanceof Error) message.error(err.message, 8);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const handleAccountOrNetworkChange = useCallback(async () => {
 		checkIfWalletIsConnected();
-		if (!!currentAccountAddress) getBalanceInEthers();
-	}, [checkIfWalletIsConnected, currentAccountAddress, getBalanceInEthers]);
+		if (!!state.currentAccountAddress) getBalanceInEthers();
+	}, [checkIfWalletIsConnected, state.currentAccountAddress, getBalanceInEthers]);
 
 	useEffect(() => {
+		if (!withEffects) return;
 		checkIfWalletIsConnected();
 		window.ethereum.on("accountsChanged", handleAccountOrNetworkChange);
 		window.ethereum.on("networkChanged", handleAccountOrNetworkChange);
@@ -126,16 +124,15 @@ export const useWallet = () => {
 			window.ethereum.removeListener("accountsChanged", handleAccountOrNetworkChange);
 			window.ethereum.removeListener("networkChanged", handleAccountOrNetworkChange);
 		};
-	}, [checkIfWalletIsConnected, handleAccountOrNetworkChange]);
+	}, [checkIfWalletIsConnected, handleAccountOrNetworkChange, withEffects]);
 
 	useEffect(() => {
-		if (!!currentAccountAddress) getBalanceInEthers();
-	}, [currentAccountAddress, getBalanceInEthers]);
+		if (!withEffects) return;
+		if (!!state.currentAccountAddress) getBalanceInEthers();
+	}, [state.currentAccountAddress, getBalanceInEthers, withEffects]);
 
 	return {
 		connectWallet,
-		currentAccountAddress,
-		balanceInEthers,
 		isLoading,
 		sendEth,
 	};
