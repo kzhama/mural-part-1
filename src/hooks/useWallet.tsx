@@ -13,10 +13,10 @@ export const useWallet = ({ withEffects }: UseWalletProps) => {
 
 	const { state, dispatch } = useCustomContext();
 
-	const resetStates = () => {
+	const resetStates = useCallback(() => {
 		dispatch({ type: SET_BALANCE_IN_ETHERS, payload: "" });
 		dispatch({ type: SET_CURRENT_ACCOUNT_ADDRESS, payload: "" });
-	};
+	}, [dispatch]);
 
 	const checkIfWalletIsConnected = useCallback(async () => {
 		setIsLoading(true);
@@ -78,7 +78,7 @@ export const useWallet = ({ withEffects }: UseWalletProps) => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [state.currentAccountAddress, dispatch, withEffects]);
+	}, [state.currentAccountAddress, dispatch]);
 
 	const sendEth = async (ethAddress: string, amountInEth: string) => {
 		setIsLoading(true);
