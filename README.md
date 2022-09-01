@@ -1,4 +1,4 @@
-# Mural Part 1
+# Web 3 Wallet App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
